@@ -18,7 +18,7 @@ READ_LENGTH="${10}"
 PLOIDY=2
 SEED=$RANDOM
 SUBCLONES=1
-SIMULATION_LOG_FILE=/$ref/$OUTPUT_PREFIX/SIMULATION_IS_RUNNING.txt
+SIMULATION_LOG_FILE=$ref/$OUTPUT_PREFIX/SIMULATION_IS_RUNNING.txt
 M="-m 200"
 if [[ "$SINGLE_OR_PAIRED" == "False" ]]; then
         SINGLE_OR_PAIRED="-p"
@@ -27,11 +27,11 @@ if [[ "$SINGLE_OR_PAIRED" == "False" ]]; then
         unset M
 fi
 #if the -s argument was used, then SINGLE_OR_PAIRED will be null. otherwise it will be -p. 
-mkdir -p /$ref/$OUTPUT_PREFIX/normal
-mkdir -p /$ref/$OUTPUT_PREFIX/tumor
+mkdir -p $ref/$OUTPUT_PREFIX/normal
+mkdir -p $ref/$OUTPUT_PREFIX/tumor
 for i in `seq 1 $SUBCLONES`
 do
-   mkdir -p /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
+   mkdir -p $ref/$OUTPUT_PREFIX/tumor/subclone_$i
 done
 
 # print a starting message
@@ -49,24 +49,24 @@ printf "Read Length: "$READ_LENGTH"\n\n" >> $SIMULATION_LOG_FILE
 
 # creating and copying files
 printf "Copying temporary files for normal reads ..\n" >> $SIMULATION_LOG_FILE
-cp /$ref/$REFERENCE /$ref/$OUTPUT_PREFIX/normal
+cp $ref/$REFERENCE /$ref/$OUTPUT_PREFIX/normal
 printf "Copying temporary files for tumor reads ..\n\n" >> $SIMULATION_LOG_FILE
 for i in `seq 1 $SUBCLONES`
 do
-    cp /$ref/$REFERENCE /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
-    cp /$ref/$TARGET /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
+    cp $ref/$REFERENCE /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
+    cp $ref/$TARGET /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
 done
 
 # generate normal reads
 printf "Generating normal reads ..\n\n" >> $SIMULATION_LOG_FILE
-cd /$ref/
-NORMAL_REFERENCE=/$ref/$OUTPUT_PREFIX/normal/$REFERENCE
-NORMAL_TARGET=/$ref/$OUTPUT_PREFIX/normal/$TARGET
-NORMAL_OUTPUT_PREFIX=/$ref/$OUTPUT_PREFIX/normal/normal
+cd $ref/
+NORMAL_REFERENCE=$ref/$OUTPUT_PREFIX/normal/$REFERENCE
+NORMAL_TARGET=$ref/$OUTPUT_PREFIX/normal/$TARGET
+NORMAL_OUTPUT_PREFIX=$ref/$OUTPUT_PREFIX/normal/normal
 ./art_illumina -i $NORMAL_REFERENCE -rs $SEED $M -s 10 -l 100 $SINGLE_OR_PAIRED -f $FOLD_COVERAGE -o $NORMAL_OUTPUT_PREFIX >> $SIMULATION_LOG_FILE 2>&1
 printf "Finished generating normal reads ..\n\n" >> $SIMULATION_LOG_FILE
 # clean temporary files
-cd /$ref/$OUTPUT_PREFIX/normal
+cd $ref/$OUTPUT_PREFIX/normal
 #rm *.fa
 #rm *.fa.fai
 
@@ -77,7 +77,7 @@ printf "Simulating tumor variations in subclone $i ..\n" >> $SIMULATION_LOG_FILE
 printf "This step takes some time. Be patient and don't terminate the Docker container :)\n\n" >> $SIMULATION_LOG_FILE 2>&1
 cd /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
 if (( $PLOIDY == 3)); then
-    /$ref/SInC/SInC_simulate -S $SNP_RATE -I $INDEL_RATE -p $CNV_RATE -l $CNV_MIN_SIZE -u $CNV_MAX_SIZE -t $TRANSITION_TRANSVERSION_RATIO $REFERENCE >> $SIMULATION_LOG_FILE
+    $ref/SInC/SInC_simulate -S $SNP_RATE -I $INDEL_RATE -p $CNV_RATE -l $CNV_MIN_SIZE -u $CNV_MAX_SIZE -t $TRANSITION_TRANSVERSION_RATIO $REFERENCE >> $SIMULATION_LOG_FILE
     for entry in /$ref/$OUTPUT_PREFIX/tumor/subclone_$i/*
     do
         if [[ $entry == *"allele_1"* ]]; then
@@ -108,8 +108,8 @@ if (( $PLOIDY == 3)); then
     printf "Measuring ploidy level .. Still simulating tumor variations in subclone $i ..\n\n" >> $SIMULATION_LOG_FILE
 fi
 
-/$ref/SInC/SInC_simulate -S $SNP_RATE -I $INDEL_RATE -p $CNV_RATE -l $CNV_MIN_SIZE -u $CNV_MAX_SIZE -t $TRANSITION_TRANSVERSION_RATIO $REFERENCE >> $SIMULATION_LOG_FILE
-for entry in /$ref/$OUTPUT_PREFIX/tumor/subclone_$i/*
+$ref/SInC/SInC_simulate -S $SNP_RATE -I $INDEL_RATE -p $CNV_RATE -l $CNV_MIN_SIZE -u $CNV_MAX_SIZE -t $TRANSITION_TRANSVERSION_RATIO $REFERENCE >> $SIMULATION_LOG_FILE
+for entry in $ref/$OUTPUT_PREFIX/tumor/subclone_$i/*
 do
     if [[ $entry == *"allele_1"* ]]; then
         mv $entry 'allele_1.fa'
@@ -143,23 +143,23 @@ rm $REFERENCE
 
 # generate tumor reads
 # allele 1
-cd /$ref/
+cd $ref/
 printf "Generating reads for subclone $i ..\n\n" >> $SIMULATION_LOG_FILE
-TUMOR_REFERENCE=/$ref/$OUTPUT_PREFIX/tumor/subclone_$i/allele_1.fa
-TUMOR_OUTPUT_PREFIX=/$ref/$OUTPUT_PREFIX/tumor/subclone_$i/tumor_allele1
+TUMOR_REFERENCE=$ref/$OUTPUT_PREFIX/tumor/subclone_$i/allele_1.fa
+TUMOR_OUTPUT_PREFIX=$ref/$OUTPUT_PREFIX/tumor/subclone_$i/tumor_allele1
 ./art_illumina -i $TUMOR_REFERENCE -rs $SEED $M -s 10 -l 100 $SINGLE_OR_PAIRED -f $FOLD_COVERAGE -o $TUMOR_OUTPUT_PREFIX >> $SIMULATION_LOG_FILE 2>&1
 
 # allele 2
-TUMOR_REFERENCE=/$ref/$OUTPUT_PREFIX/tumor/subclone_$i/allele_2.fa
-TUMOR_OUTPUT_PREFIX=/$ref/$OUTPUT_PREFIX/tumor/subclone_$i/tumor_allele2
+TUMOR_REFERENCE=$ref/$OUTPUT_PREFIX/tumor/subclone_$i/allele_2.fa
+TUMOR_OUTPUT_PREFIX=$ref/$OUTPUT_PREFIX/tumor/subclone_$i/tumor_allele2
 ./art_illumina -i $TUMOR_REFERENCE -rs $SEED $M -s 10 -l 100 -f $FOLD_COVERAGE $SINGLE_OR_PAIRED -o $TUMOR_OUTPUT_PREFIX >> $SIMULATION_LOG_FILE 2>&1
 
 #python Wessim1.py -R $TUMOR_REFERENCE -B $TUMOR_TARGET -n $TUMOR_NUMBER_OF_READS -l $READ_LENGTH -M $MODEL_FILE -o $TUMOR_OUTPUT_PREFIX -t 2 -p >> $SIMULATION_LOG_FILE 2>&1
 printf "Finished generating reads for subclone $i ..\n\n" >> $SIMULATION_LOG_FILE
 # allele 3
 if (( $PLOIDY == 3)); then
-    TUMOR_REFERENCE=/$ref/$OUTPUT_PREFIX/tumor/subclone_$i/allele_3.fa
-    TUMOR_OUTPUT_PREFIX=/$ref/$OUTPUT_PREFIX/tumor/subclone_$i/tumor_allele3
+    TUMOR_REFERENCE=$ref/$OUTPUT_PREFIX/tumor/subclone_$i/allele_3.fa
+    TUMOR_OUTPUT_PREFIX=$ref/$OUTPUT_PREFIX/tumor/subclone_$i/tumor_allele3
     ./art_illumina -i $TUMOR_REFERENCE -rs $SEED $M -s 10 -l 100 -f $FOLD_COVERAGE $SINGLE_OR_PAIRED -o $TUMOR_OUTPUT_PREFIX >> $SIMULATION_LOG_FILE 2>&1
 #    MODEL_FILE=/easyscnvsim_lib/Wessim/models/ill100v4_p.gzip
 #   python Wessim1.py -R $TUMOR_REFERENCE -B $TUMOR_TARGET -n $TUMOR_NUMBER_OF_READS -l $READ_LENGTH -M $MODEL_FILE -o $TUMOR_OUTPUT_PREFIX -t 2 -p >> $SIMULATION_LOG_FILE 2>&1
@@ -167,7 +167,7 @@ if (( $PLOIDY == 3)); then
 fi
 
 # clean temporary files
-cd /$ref/$OUTPUT_PREFIX/tumor/subclone_$i
+cd $ref/$OUTPUT_PREFIX/tumor/subclone_$i
 rm *.bed*
 rm *.fa
 rm *.fa.fai
@@ -176,4 +176,4 @@ done
 
 # at the end of the simulation, rename the log file
 printf "SIMULATION IS COMPLETE. CHECK THE FOLDERS FOR READS!" >> $SIMULATION_LOG_FILE
-mv $SIMULATION_LOG_FILE /$ref/$OUTPUT_PREFIX/SIMULATION_IS_COMPLETE.txt
+mv $SIMULATION_LOG_FILE $ref/$OUTPUT_PREFIX/SIMULATION_IS_COMPLETE.txt
