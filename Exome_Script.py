@@ -14,7 +14,7 @@ import subprocess
 from itertools import accumulate
 import bisect
 import glob
-
+#all of these imports are part of the python standard library of python3
 #required arguments
 parser=argparse.ArgumentParser() 
 parser.add_argument("filename", help="name of output file") 
