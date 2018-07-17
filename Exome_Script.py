@@ -4,6 +4,10 @@
 # The error positions will be relative to the exome. We want them relative to the genome. 
 # genome_position_of_error = exon_position_in_genome + error_position_in_exon
 # first we go through the error list and figure out which exon the error belongs to. We then calculate the genome_position_of_error as above. 
+
+import sys
+if sys.version_info[0] < 3:
+    raise Exception("Must be using Python 3")
 import argparse
 import os 
 import subprocess
@@ -48,7 +52,7 @@ def prep_bed():
  os.system("module load bedtools")
  #bedtools_location=subprocess.check_output(["which bedtools"], shell=True, universal_newlines=True).strip()
  new_bedfile=args.bed+"_disjoint"
- os.system("{} merge -d {} -i {} > {}".format("./bedtools", args.m, args.bed, new_bedfile))
+ os.system("{} merge -d {} -i {} > {}".format("/isg/shared/apps/BEDtools/2.27.1/bin/bedtools", args.m, args.bed, new_bedfile))
 
 def genome_IO(genome_file): 
  '''We take all the non-header lines out of the genome and contatenate 
@@ -155,26 +159,22 @@ def add_header(filename):
   fh.write("genome_start\tgenome_end\ttarget\texome_start\texome_end\ttype\n"+content) 
  fh.close() 
 
-def call_varsimlab(genome_file, *bed_file):
- '''we call varsimlab on our exonic regions.'''
- if bed_file is not None:
- #bed file only supplied when doing exome sequencing. If we're doing genome sequencing we can save a lot of work.
-  genome=genome_IO(genome_file)
-  exome_list=genome_to_exome(genome)  
-  exome=exome_list[0] #make a list of the exonic regions 
-  exome=''.join(exome)
-  exome_with_linebreaks=[]
-  for i in range(0, len(exome), 50):
-   exome_with_linebreaks.append(exome[i:i+50])
-  exome_with_linebreaks='\n'.join(exome_with_linebreaks)
+def call_varsimlab(genome_file, bed_file):
+ '''we call varsimlab on our exonic regions.''' 
+ genome=genome_IO(genome_file)
+ exome_list=genome_to_exome(genome)  
+ exome=exome_list[0] #make a list of the exonic regions 
+ exome=''.join(exome)
+ exome_with_linebreaks=[]
+ for i in range(0, len(exome), 50):
+  exome_with_linebreaks.append(exome[i:i+50])
+ exome_with_linebreaks='\n'.join(exome_with_linebreaks)
 #add in line breaks and a header. art needs them. 
-  exome_with_linebreaks=(">exome\n"+exome_with_linebreaks)
-  exome_file=open("exome_with_linebreaks.fa", "w") 
-  exome_file.write(exome_with_linebreaks)
+ exome_with_linebreaks=(">exome\n"+exome_with_linebreaks)
+ exome_file=open("exome_with_linebreaks.fa", "w") 
+ exome_file.write(exome_with_linebreaks)
 #exome with linebreaks used by run.sh  
-  os.system("./art_run.sh {} {} {} {} {} {} {} {} {} {}".format(args.filename, "exome_with_linebreaks.fa", args.c, args.s, args.snp, args.indel, args.cnv, args.cnv_min_size, args.cnv_max_size, args.l))
- else:
-  os.system("./art_run.sh {} {} {} {} {} {} {} {} {} {}".format(args.filename, "exome_with_linebreaks.fa", args.c, args.s, args.snp, args.indel, args.cnv, args.cnv_min_size, args.cnv_max_size, args.l)) 
+ os.system("./art_run.sh {} {} {} {} {} {} {} {} {} {}".format(args.filename, "exome_with_linebreaks.fa", args.c, args.s, args.snp, args.indel, args.cnv, args.cnv_min_size, args.cnv_max_size, args.l))
 
 if __name__=="__main__" and not args.use_genome:
 #if we are doing exome sequencing
@@ -201,5 +201,5 @@ if __name__=="__main__" and not args.use_genome:
   add_header(file)
 
 elif __name__=="__main__": 
- call_varsimlab(args.genome)
- #if we're just doing genome sequencing we can simply call varsimlab. We don't need to do any error file correcting, or subsequencing. 
+ os.system("./art_run.sh {} {} {} {} {} {} {} {} {} {}".format(args.filename, args.genome, args.c, args.s, args.snp, args.indel, args.cnv, args.cnv_min_size, args.cnv_max_size, args.l))
+ #if we're just doing genome sequencing we can simply call run.sh. We don't need to do any error file correcting, or subsequencing. 

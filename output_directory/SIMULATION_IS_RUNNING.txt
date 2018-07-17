@@ -1,0 +1,31 @@
+SIMULATION STARTED WITH THE FOLLOWING PARAMETERS
+
+SNP Rate: 0.002
+Indel Rate: 0.001
+Transition/Transversion Ratio: 2
+CNV Rate: 8
+CNV Minimum Size: 10000
+CNV Maximum Size: 40000
+Ploidy: 2
+Subclones: 1
+Fold Coverage: 25
+Read Length: 100
+
+Copying temporary files for normal reads ..
+Copying temporary files for tumor reads ..
+
+Generating normal reads ..
+
+
+    ====================ART====================
+             ART_Illumina (2008-2016)          
+          Q Version 2.5.8 (June 6, 2016)       
+     Contact: Weichun Huang <whduke@gmail.com> 
+    -------------------------------------------
+
+the file: /home/CAM/tdavis/Varsimlab_exome/output_directory/normal//home/CAM/tdavis/chr20.fa can not be opened
+Finished generating normal reads ..
+
+Simulating tumor variations in subclone 1 ..
+This step takes some time. Be patient and don't terminate the Docker container :)
+
