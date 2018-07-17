@@ -2,6 +2,7 @@
 
 Varsimlab is a command line python pipeline designed to easily generate artificial short reads, with structural and copy number variations. Using ART short read simulation and SInC error generation, Varsimlab can quickly simulate biologically realistic tumor and normal short reads for either genome or exome simulations
 
+Varsimlab can generate SNPs, INDELS, and CNVs to user specification, and can simulate tumor heterogeneity and polyploidy
 # Setup and Dependencies 
 
 Varsimlab can be called from the command line using any python 3 version
@@ -10,7 +11,8 @@ Varsimlab can be called from the command line using any python 3 version
 Varsimlab uses art_illumina to generate short reads with realistic sequencing errors. The documentation is available [here](https://www.niehs.nih.gov/research/resources/software/biostatistics/art/index.cfm)
 
 To install ART 
-``` curl -O https://www.niehs.nih.gov/research/resources/assets/docs/artbinmountrainier2016.06.05linux64.tgz
+```
+ curl -O https://www.niehs.nih.gov/research/resources/assets/docs/artbinmountrainier2016.06.05linux64.tgz
 tar -xvzf artbinmountrainier2016.06.05linux64.tgz
 ``` 
 
@@ -35,7 +37,7 @@ To simulate tumor and normal reads for a genome sequence Varsimlab requires 3 ar
 
 References for the human genome can be found online [here](https://genome.ucsc.edu/cgi-bin/hgGateway?db=hg38)
 
-an example usecase 
+an example use case 
 ```
  python3 Exome_Script.py output_directory ~/chr20.fa -use_genome
 ```
@@ -43,15 +45,25 @@ an example usecase
 To simulate tumor and normal reads for a exome sequence, Varsimlab requires the following
 1. A name for the output file which will contain tumor and normal reads
 2. The reference sequence you are interested in simulating
-3. -bed argument, followed by the path to a bed file containing the positions of the exonic regions of your sequence 
+3. -bed argument, followed by the path to a tab seperated bed file containing the positions of the exonic regions of your sequence 
 
-That last part might sound daunting but fortunately UCSC tablebrowser makes it easy. The website can be found [here](https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=677064941_DieH2qjeHz0zB8ElNBfAc4ojENCa)
+An example use case: 
+```
+python3 Exome_script.py output_directory ~/chr20.fa chr20.bed
+```
+Step 3 might sound daunting but fortunately UCSC tablebrowser makes it easy. The website can be found [here](https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=677064941_DieH2qjeHz0zB8ElNBfAc4ojENCa)
 and here is an explanatory video from USCS that may be helpful
 
  
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=6JoUqM1iKxQ
 " target="_blank"><img src="http://img.youtube.com/vi/6JoUqM1iKxQ/0.jpg" 
 alt="Exome bed file explanatory video" width="240" height="180" border="10" /></a>
+
+### output format
+Exome_script.py will generate a directory with the name given. In this directory will be a the following: 
+1. A log file called SIMULATION_IS_COMPLETE.txt, containing details about the run and the parameters provided.
+2. A directory labeled normal, with the normal reads in files ending in .fq 
+3. A directoy labeled tumor, with tumor reads in files ending in .fq, and error benchmark files, with the positions and variant for each of the tumor variations generated 
 
 # Available Arguments
 to see this guide on the command line, type 
