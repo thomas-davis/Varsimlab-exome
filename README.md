@@ -1,8 +1,8 @@
 # Introduction
 
-Varsimlab is a command line python pipeline designed to easily generate artificial short reads, with structural and copy number variations. Using ART short read simulation and SInC error generation, Varsimlab can quickly simulate biologically realistic tumor and normal short reads for either genome or exome simulations
+Varsimlab is a command line python pipeline designed to easily generate artificial short reads, with structural and copy number variations. Using ART short read simulation and SInC error generation, Varsimlab can quickly simulate biologically realistic tumor and normal short reads for either genome or exome simulations.
 
-Varsimlab can generate SNPs, INDELS, and CNVs to user specification, and can simulate tumor heterogeneity and polyploidy
+Varsimlab can generate SNPs, INDELS, and CNVs to user specification, and can simulate tumor heterogeneity and polyploidy.
 # Setup and Dependencies 
 
 Varsimlab can be called from the command line using any python 3 version
@@ -16,7 +16,7 @@ To install ART
 tar -xvzf artbinmountrainier2016.06.05linux64.tgz
 ``` 
 
-VarSimLab uses SInC simulator to generate biologically realistic tumor genomic variations. The source files are available [here](https://sourceforge.net/projects/sincsimulator/files/?source=navbar)
+VarSimLab uses SInC simulator to generate biologically realistic tumor genomic variations. The source files and instructions on compiling are available [here](https://sourceforge.net/projects/sincsimulator/files/?source=navbar)
 
 Lastly if you'd like to use Varsimlabs exome sequencing capabilities, Varsimlab uses Bedtools is required. bedtools documentation is available [here](http://bedtools.readthedocs.io/en/latest/) 
 
