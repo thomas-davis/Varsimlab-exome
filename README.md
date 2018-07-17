@@ -1,16 +1,15 @@
-#Introduction
+# Introduction
 
 Varsimlab is a command line python pieline designed to easily generate artificial genome or exome sequences, with structural and copy number variations. Using ART short read simulation and SInC error generation, Varsimlab can quickly simulate biologically realistic tumor and normal short reads
 
-#Setup and Dependencies 
-Varsimlab uses art_illumina to generate short reads with realistic sequencing errors. The documentation is available here 
-(https://www.niehs.nih.gov/research/resources/software/biostatistics/art/index.cfm)
+# Setup and Dependencies 
+Varsimlab uses art_illumina to generate short reads with realistic sequencing errors. The documentation is available [here](https://www.niehs.nih.gov/research/resources/software/biostatistics/art/index.cfm)
 To install ART 
 ``` curl -O https://www.niehs.nih.gov/research/resources/assets/docs/artbinmountrainier2016.06.05linux64.tgz
 tar -xvzf artbinmountrainier2016.06.05linux64.tgz
 ``` 
 
-If you'd like to use Varsimlabs exome sequencing capabilities, Varsimlab uses Bedtools is required. bedtools documentation is available here (http://bedtools.readthedocs.io/en/latest/) 
+If you'd like to use Varsimlabs exome sequencing capabilities, Varsimlab uses Bedtools is required. bedtools documentation is available [here](http://bedtools.readthedocs.io/en/latest/) 
 to install bedtools 
 ```
 wget https://github.com/arq5x/bedtools2/releases/download/v2.25.0/bedtools-2.25.0.tar.gz
