@@ -48,11 +48,13 @@ assert args.indel>=0 and args.indel<=100, "INDEL rate should be between 0 and 10
 
 def prep_bed(): 
  '''take bed file, merge together ranges that overlap or are within 30 bp of eachother. This prevents the same region being included twice, and prevents INDELS being created between nearby ranges'''
- #TODO this won't work if we want to distribute the software package. Need to write an installer maybe? 
  os.system("module load bedtools")
  #bedtools_location=subprocess.check_output(["which bedtools"], shell=True, universal_newlines=True).strip()
+ os.system("sort -k2,2n {} -o {}".format(args.bed, args.bed))
+ #sort the bed file based on the start column (required for bedtools merge)
  new_bedfile=args.bed+"_disjoint"
  os.system("{} merge -d {} -i {} > {}".format("/isg/shared/apps/BEDtools/2.27.1/bin/bedtools", args.m, args.bed, new_bedfile))
+ #merge together adjacent ranges in bed file, rendering the bed file nonoverlapping
 
 def genome_IO(genome_file): 
  '''We take all the non-header lines out of the genome and contatenate 
@@ -80,7 +82,6 @@ def genome_to_exome(genome):
    start=int(line[1])
    end=int(line[2])
    exon_ranges.append((start,end))
- exon_ranges.sort(key=lambda x: x[0])
  #list of (start,end) tuples, sorted by start position
  for start,end in exon_ranges:
   offsets.append(start) 
